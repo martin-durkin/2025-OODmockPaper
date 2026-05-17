@@ -17,5 +17,13 @@ namespace xaml_practice
 
         //one patient csan have many appointments
         public virtual List<Appointment> Appointments { get; set; } = new List<Appointment>();
+
+
+
+        //to string method
+        public override string ToString()
+        {
+            return $"{LastName}, {FirstName}, - {ContactNumber}"; 
+        }
     }
 }

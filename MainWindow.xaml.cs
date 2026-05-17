@@ -32,7 +32,7 @@ namespace xaml_practice
         }
 
         //part i) load patients into listbox usaing LINQ
-        private void LoadPatients()
+        public void LoadPatients()
         {
             var query = from p in db.Patients
                         orderby p.LastName
@@ -48,7 +48,7 @@ namespace xaml_practice
             textBox.Text = "";                                                
         }
 
-        //adding new patient to db
+        //part j) adding new patient to db
         private void btnAddPatient_Click(object sender, RoutedEventArgs e)
         {
             //read data from screen
@@ -75,6 +75,66 @@ namespace xaml_practice
 
             //refresh listbox
             LoadPatients();
+        }
+
+        //park k) adding appointment opens new window to add appointment details
+        private void btnAddAppointment_Click(object sender, RoutedEventArgs e)
+        {
+            Patient selectedPatient = lbxPatients.SelectedItem as Patient;
+            if (selectedPatient != null)
+            {
+                AppointmentWindow appointmentWindow = new AppointmentWindow(selectedPatient.PatientId);
+                appointmentWindow.Owner = this;
+                appointmentWindow.Show();
+            }
+            else
+            {
+                MessageBox.Show("Please select a patient first.");
+            }
+        }
+
+        //loads appoinments for slected patient
+        private void lbxPatients_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Patient selectedPatient = lbxPatients.SelectedItem as Patient;
+
+            if (selectedPatient != null)
+            {
+                var query = from a in db.Appointments
+                                   where a.PatientId == selectedPatient.PatientId
+                                   orderby a.AppointmentTime
+                                   select a;
+
+                var results = query.ToList();
+
+                if (results.Count > 0)
+                {
+                    lbxAppointments.ItemsSource = results;
+                }
+                else
+                {
+                    lbxAppointments.ItemsSource = null;
+                    MessageBox.Show("No appointments found for this patient.");
+                }
+            }
+        }
+
+        private void btnEditAppointment_Click(object sender, RoutedEventArgs e)
+        {
+            Appointment selectedAppointment = lbxAppointments.SelectedItem as Appointment;
+
+
+            if (selectedAppointment != null)
+            {
+                AppointmentWindow appointmentWindow = new AppointmentWindow(selectedAppointment.PatientId, selectedAppointment.AppointmentId);
+                appointmentWindow.Owner = this;
+                appointmentWindow.ShowDialog();
+            }
+
+            else 
+            {
+                MessageBox.Show("Please select an appointment to edit.");
+            }
         }
     }
 }

@@ -19,5 +19,13 @@ namespace xaml_practice
 
         //navigation property for one to many relationship with patient
         public virtual Patient Patient { get; set; }
+
+
+        //to string method
+
+            public override string ToString()
+            {
+                return $"{AppointmentTime.ToShortDateString()} - {AppointmentNotes}";
+        }
     }
 }
